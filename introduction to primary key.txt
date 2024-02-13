@@ -1,0 +1,416 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| centre_formation   |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| test               |
+| world              |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> create database test2;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| centre_formation   |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| test               |
+| test2              |
+| world              |
++--------------------+
+9 rows in set (0.00 sec)
+
+mysql> use test2;
+Database changed
+mysql> create table stagiaire(
+    -> code_stg int primary key,
+    -> nom_stg varchar(15) not null);
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_test2 |
++-----------------+
+| stagiaire       |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> desc stagiaire;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| code_stg | int         | NO   | PRI | NULL    |       |
+| nom_stg  | varchar(15) | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select * from stagiaire;
+Empty set (0.00 sec)
+
+mysql> insert into stagiaire
+    -> values (1,"Badre"),
+    -> (2,"Salah");
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from stagiaire;
++----------+---------+
+| code_stg | nom_stg |
++----------+---------+
+|        1 | Badre   |
+|        2 | Salah   |
++----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> insert into stagiaire
+    -> values (1,"Anas");
+ERROR 1062 (23000): Duplicate entry '1' for key 'stagiaire.PRIMARY'
+mysql> insert into stagiaire
+    -> values (3,"Salah");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from stagiaire;
++----------+---------+
+| code_stg | nom_stg |
++----------+---------+
+|        1 | Badre   |
+|        2 | Salah   |
+|        3 | Salah   |
++----------+---------+
+3 rows in set (0.00 sec)
+
+mysql> delete from stagiaire where code_stg = 3 ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from stagiaire;
++----------+---------+
+| code_stg | nom_stg |
++----------+---------+
+|        1 | Badre   |
+|        2 | Salah   |
++----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> create table stag_copy like stagiaire;
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> show tables ;
++-----------------+
+| Tables_in_test2 |
++-----------------+
+| stag_copy       |
+| stagiaire       |
++-----------------+
+2 rows in set (0.00 sec)
+
+mysql> desc stag_copy;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| code_stg | int         | NO   | PRI | NULL    |       |
+| nom_stg  | varchar(15) | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select * from stag_copy;
+Empty set (0.00 sec)
+
+mysql> insert into stag_copy select * from stagiaire;
+Query OK, 2 rows affected (0.02 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from stag_copy;
++----------+---------+
+| code_stg | nom_stg |
++----------+---------+
+|        1 | Badre   |
+|        2 | Salah   |
++----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select * from stagiaire;
++----------+---------+
+| code_stg | nom_stg |
++----------+---------+
+|        1 | Badre   |
+|        2 | Salah   |
++----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> delete from stagiaire;
+Query OK, 2 rows affected (0.02 sec)
+
+mysql> select * from stagiaire;
+Empty set (0.00 sec)
+
+mysql> insert into stagiaire select * from stag_copy;
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from stagiaire;
++----------+---------+
+| code_stg | nom_stg |
++----------+---------+
+|        1 | Badre   |
+|        2 | Salah   |
++----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> delete from stag_copy where code_stg = 2 ;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from stag_copy;
++----------+---------+
+| code_stg | nom_stg |
++----------+---------+
+|        1 | Badre   |
++----------+---------+
+1 row in set (0.00 sec)
+
+mysql> drop table stag_copy;
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_test2 |
++-----------------+
+| stagiaire       |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> select * from stagiaire;
++----------+---------+
+| code_stg | nom_stg |
++----------+---------+
+|        1 | Badre   |
+|        2 | Salah   |
++----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> alter table stagiaire
+    -> drop primary key;
+Query OK, 2 rows affected (0.23 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> desc stagiaire;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| code_stg | int         | NO   |     | NULL    |       |
+| nom_stg  | varchar(15) | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> alter table stagiaire
+    -> add primary key (code_stg);
+Query OK, 0 rows affected (0.33 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc stagiaire;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| code_stg | int         | NO   | PRI | NULL    |       |
+| nom_stg  | varchar(15) | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> create table groupe (code_gp int primary key ,
+    -> nom_gb varchar(15) not null unique ,
+    -> filiere_gb varchar(15) not null );
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> show tables ;
++-----------------+
+| Tables_in_test2 |
++-----------------+
+| groupe          |
+| stagiaire       |
++-----------------+
+2 rows in set (0.00 sec)
+
+mysql> desc groupe;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| code_gp    | int         | NO   | PRI | NULL    |       |
+| nom_gb     | varchar(15) | NO   | UNI | NULL    |       |
+| filiere_gb | varchar(15) | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select * from groupe;
+Empty set (0.00 sec)
+
+mysql> insert into groupe
+    -> values (1,'Dev104','Dev'),
+    -> values (2,'ges100','Ges'),
+    -> values (3,'dev101', 'Dev');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'values (2,'ges100','Ges'),
+values (3,'dev101', 'Dev')' at line 3
+mysql> insert into groupe
+    -> values (1,'Dev104','Dev'),
+    ->  (2,'ges100','Ges'),
+    ->  (3,'dev101', 'Dev');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from groupe;
++---------+--------+------------+
+| code_gp | nom_gb | filiere_gb |
++---------+--------+------------+
+|       1 | Dev104 | Dev        |
+|       2 | ges100 | Ges        |
+|       3 | dev101 | Dev        |
++---------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> alter table stagiaire
+    -> add code_gb int ;
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc stagiaire;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| code_stg | int         | NO   | PRI | NULL    |       |
+| nom_stg  | varchar(15) | NO   |     | NULL    |       |
+| code_gb  | int         | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select * from stagiaire;
++----------+---------+---------+
+| code_stg | nom_stg | code_gb |
++----------+---------+---------+
+|        1 | Badre   |    NULL |
+|        2 | Salah   |    NULL |
++----------+---------+---------+
+2 rows in set (0.00 sec)
+
+mysql> alter table stagiaire
+    -> add foreign key (code_gb) references groupe(code_gb);
+ERROR 3734 (HY000): Failed to add the foreign key constraint. Missing column 'code_gb' for constraint 'stagiaire_ibfk_1' in the referenced table 'groupe'
+mysql> alter table stagiaire
+    -> add foreign key (code_gb) references groupe(code_gb);
+ERROR 3734 (HY000): Failed to add the foreign key constraint. Missing column 'code_gb' for constraint 'stagiaire_ibfk_1' in the referenced table 'groupe'
+mysql> alter table stagiaire
+    -> add foreign key (code_gb) references groupe(code_gp);
+Query OK, 2 rows affected (0.31 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> desc stagiaire;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| code_stg | int         | NO   | PRI | NULL    |       |
+| nom_stg  | varchar(15) | NO   |     | NULL    |       |
+| code_gb  | int         | YES  | MUL | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> update stagiaire
+    -> set code_gb = 3 where code_stg = 1 ;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update stagiaire
+    -> set code_gb = 1 where code_stg = 2 ;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from stagiaire;
++----------+---------+---------+
+| code_stg | nom_stg | code_gb |
++----------+---------+---------+
+|        1 | Badre   |       3 |
+|        2 | Salah   |       1 |
++----------+---------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select * from groupe;
++---------+--------+------------+
+| code_gp | nom_gb | filiere_gb |
++---------+--------+------------+
+|       1 | Dev104 | Dev        |
+|       2 | ges100 | Ges        |
+|       3 | dev101 | Dev        |
++---------+--------+------------+
+3 rows in set (0.00 sec)
+
+mysql> delete from groupe where code_gp = 1;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`test2`.`stagiaire`, CONSTRAINT `stagiaire_ibfk_1` FOREIGN KEY (`code_gb`) REFERENCES `groupe` (`code_gp`))
+mysql> delete from groupe where code_gp = 2;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from groupe;
++---------+--------+------------+
+| code_gp | nom_gb | filiere_gb |
++---------+--------+------------+
+|       1 | Dev104 | Dev        |
+|       3 | dev101 | Dev        |
++---------+--------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from stagiaire join groupe where stagiaire.code_gb = groupe.code_gp ;
++----------+---------+---------+---------+--------+------------+
+| code_stg | nom_stg | code_gb | code_gp | nom_gb | filiere_gb |
++----------+---------+---------+---------+--------+------------+
+|        2 | Salah   |       1 |       1 | Dev104 | Dev        |
+|        1 | Badre   |       3 |       3 | dev101 | Dev        |
++----------+---------+---------+---------+--------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from stagiaire join groupe;
++----------+---------+---------+---------+--------+------------+
+| code_stg | nom_stg | code_gb | code_gp | nom_gb | filiere_gb |
++----------+---------+---------+---------+--------+------------+
+|        1 | Badre   |       3 |       1 | Dev104 | Dev        |
+|        2 | Salah   |       1 |       1 | Dev104 | Dev        |
+|        1 | Badre   |       3 |       3 | dev101 | Dev        |
+|        2 | Salah   |       1 |       3 | dev101 | Dev        |
++----------+---------+---------+---------+--------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select code_stg,nom_stg,filiere_gb from stagiaire join groupe where stagiaire.code_gb = groupe.code_gp ;
++----------+---------+------------+
+| code_stg | nom_stg | filiere_gb |
++----------+---------+------------+
+|        2 | Salah   | Dev        |
+|        1 | Badre   | Dev        |
++----------+---------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select code_stg,nom_stg,nom_gb,filiere_gb from stagiaire join groupe where stagiaire.code_gb = groupe.code_gp ;
++----------+---------+--------+------------+
+| code_stg | nom_stg | nom_gb | filiere_gb |
++----------+---------+--------+------------+
+|        2 | Salah   | Dev104 | Dev        |
+|        1 | Badre   | dev101 | Dev        |
++----------+---------+--------+------------+
+2 rows in set (0.00 sec)
+
+mysql> desc groupe;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| code_gp    | int         | NO   | PRI | NULL    |       |
+| nom_gb     | varchar(15) | NO   | UNI | NULL    |       |
+| filiere_gb | varchar(15) | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> exit;
